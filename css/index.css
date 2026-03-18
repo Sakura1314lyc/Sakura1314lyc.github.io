@@ -7860,3 +7860,13 @@ blockquote.pullquote.right {
     transform: rotate(360deg);
   }
 }
+body {
+  background: url('/img/Asuna.jpg') no-repeat center center fixed;
+  background-size: cover;
+}
+
+.recent-post-item,
+.card-widget {
+  background: rgba(255, 255, 255, 0.75) !important;
+  backdrop-filter: blur(10px);
+}
