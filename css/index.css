@@ -7861,12 +7861,105 @@ blockquote.pullquote.right {
   }
 }
 body {
-  background: url('/img/Asuna.jpg') no-repeat center center fixed;
-  background-size: cover;
+  background-color: #fef8ff;
+  background-image:
+    linear-gradient(90deg, rgba(255, 228, 240, 0.9) 25%, rgba(205, 255, 230, 0.9) 25%, rgba(205, 255, 230, 0.9) 50%, rgba(255, 228, 240, 0.9) 50%, rgba(255, 228, 240, 0.9) 75%, rgba(205, 255, 230, 0.9) 75%, rgba(205, 255, 230, 0.9) 100%),
+    linear-gradient(0deg, rgba(255, 228, 240, 0.9) 25%, rgba(205, 255, 230, 0.9) 25%, rgba(205, 255, 230, 0.9) 50%, rgba(255, 228, 240, 0.9) 50%, rgba(255, 228, 240, 0.9) 75%, rgba(205, 255, 230, 0.9) 75%, rgba(205, 255, 230, 0.9) 100%);
+  background-size: 70px 70px, 70px 70px;
+  background-attachment: fixed;
+  color: #352b55;
+  min-height: 100vh;
+  position: relative;
 }
 
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    url('/img/xianfandeni.png'),
+    url('/img/Asuna.jpg');
+  background-position: 20% 20%, 75% 70%;
+  background-size: 40%, 55%;
+  background-repeat: no-repeat;
+  opacity: 0.4;
+  filter: blur(0.9px);
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(135deg, rgba(255, 255, 255, .32), rgba(255, 255, 255, .12));
+  pointer-events: none;
+}
+
+/* 样式调整：更靠近你图中布局 */
+#page-header {
+  border: 2px solid #9ff6c8;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.72) !important;
+  box-shadow: 0 10px 22px rgba(48, 46, 80, 0.12);
+}
+
+#page-header .site-title,
+#page-header .site-nav {
+  color: #d96a9d;
+}
+
+#page-header .site-nav ul li a:hover {
+  color: #7fdbda;
+}
+
+.container,
+.content,
+.sidebar {
+  background: rgba(255, 255, 255, 0.82);
+  border: 1px solid #85e2ad;
+  border-radius: 14px;
+  box-shadow: 0 10px 25px rgba(16, 20, 60, 0.08);
+}
+
+.widget,
 .recent-post-item,
-.card-widget {
-  background: rgba(255, 255, 255, 0.75) !important;
+.card-widget,
+article,
+section {
+  background: rgba(255, 255, 255, 0.76) !important;
+  border: 1px solid #8af0ce;
+  border-radius: 13px;
+  box-shadow: 0 10px 24px rgba(20, 24, 58, 0.1);
+  backdrop-filter: blur(11px);
+}
+
+a,
+a:hover,
+a:active,
+a:focus {
+  color: #ba6da8;
+}
+
+.social-links .icon,
+#page-header .link {
+  filter: drop-shadow(0 2px 7px rgba(0, 0, 0, 0.12));
+}
+
+/* 为主要卡片增加第一张风格的边框 + 玻璃感 */
+.recent-post-item,
+.card-widget,
+.widget,
+.post-header,
+.tag-cloud,
+article,
+section {
+  background: rgba(255, 255, 255, 0.78) !important;
+  border: 1px solid #80ed99;
+  box-shadow: 0 8px 24px rgba(22, 24, 59, 0.08);
+  border-radius: 12px;
   backdrop-filter: blur(10px);
 }
+
+/* 如果要继续加入新的“后面几张”图片，请把对应文件放到 public/img/ 并在 body::before 的 background-image 列表里补上 */
