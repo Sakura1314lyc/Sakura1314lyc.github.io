@@ -7861,13 +7861,13 @@ blockquote.pullquote.right {
   }
 }
 body {
-  background-color: #fef8ff;
+  background-color: #ffeefe;
   background-image:
-    linear-gradient(90deg, rgba(255, 228, 240, 0.9) 25%, rgba(205, 255, 230, 0.9) 25%, rgba(205, 255, 230, 0.9) 50%, rgba(255, 228, 240, 0.9) 50%, rgba(255, 228, 240, 0.9) 75%, rgba(205, 255, 230, 0.9) 75%, rgba(205, 255, 230, 0.9) 100%),
-    linear-gradient(0deg, rgba(255, 228, 240, 0.9) 25%, rgba(205, 255, 230, 0.9) 25%, rgba(205, 255, 230, 0.9) 50%, rgba(255, 228, 240, 0.9) 50%, rgba(255, 228, 240, 0.9) 75%, rgba(205, 255, 230, 0.9) 75%, rgba(205, 255, 230, 0.9) 100%);
-  background-size: 70px 70px, 70px 70px;
+    linear-gradient(90deg, rgba(255, 234, 248, 0.8) 25%, rgba(192, 255, 217, 0.8) 25%, rgba(192, 255, 217, 0.8) 50%, rgba(255, 234, 248, 0.8) 50%, rgba(255, 234, 248, 0.8) 75%, rgba(192, 255, 217, 0.8) 75%, rgba(192, 255, 217, 0.8) 100%),
+    linear-gradient(0deg, rgba(255, 234, 248, 0.8) 25%, rgba(192, 255, 217, 0.8) 25%, rgba(192, 255, 217, 0.8) 50%, rgba(255, 234, 248, 0.8) 50%, rgba(255, 234, 248, 0.8) 75%, rgba(192, 255, 217, 0.8) 75%, rgba(192, 255, 217, 0.8) 100%);
+  background-size: 80px 80px, 80px 80px;
   background-attachment: fixed;
-  color: #352b55;
+  color: #2e2d41;
   min-height: 100vh;
   position: relative;
 }
@@ -7879,72 +7879,50 @@ body::before {
   z-index: -1;
   pointer-events: none;
   background-image:
+    url('/img/Asuna.jpg'),
     url('/img/xianfandeni.png'),
-    url('/img/Asuna.jpg');
-  background-position: 20% 20%, 75% 70%;
-  background-size: 40%, 55%;
+    url('/img/copicture.png');
+  background-position:
+    80% 15%,
+    20% 35%,
+    50% 75%,
+    15% 15%,
+    90% 60%,
+    50% 40%,
+    65% 85%;
+  background-size:
+    20%,
+    20%,
+    30%,
+    18%,
+    15%,
+    22%,
+    22%;
   background-repeat: no-repeat;
-  opacity: 0.4;
-  filter: blur(0.9px);
+  opacity: 0.36;
+  filter: blur(1.2px);
 }
 
+/* 关键风格小优化：让背景图略有浮层效果 */
 body::after {
   content: '';
   position: fixed;
   inset: 0;
   z-index: -1;
-  background: linear-gradient(135deg, rgba(255, 255, 255, .32), rgba(255, 255, 255, .12));
+  background: linear-gradient(135deg, rgba(255, 255, 255, .25), rgba(255, 255, 255, .1));
   pointer-events: none;
 }
 
-/* 样式调整：更靠近你图中布局 */
-#page-header {
-  border: 2px solid #9ff6c8;
-  border-radius: 14px;
-  background: rgba(255, 255, 255, 0.72) !important;
-  box-shadow: 0 10px 22px rgba(48, 46, 80, 0.12);
-}
-
-#page-header .site-title,
-#page-header .site-nav {
-  color: #d96a9d;
-}
-
-#page-header .site-nav ul li a:hover {
-  color: #7fdbda;
-}
-
-.container,
-.content,
-.sidebar {
-  background: rgba(255, 255, 255, 0.82);
-  border: 1px solid #85e2ad;
-  border-radius: 14px;
-  box-shadow: 0 10px 25px rgba(16, 20, 60, 0.08);
-}
-
-.widget,
-.recent-post-item,
 .card-widget,
+.recent-post-item,
+.widget,
+.post-header,
+.tag-cloud,
 article,
 section {
-  background: rgba(255, 255, 255, 0.76) !important;
-  border: 1px solid #8af0ce;
-  border-radius: 13px;
-  box-shadow: 0 10px 24px rgba(20, 24, 58, 0.1);
-  backdrop-filter: blur(11px);
-}
-
-a,
-a:hover,
-a:active,
-a:focus {
-  color: #ba6da8;
-}
-
-.social-links .icon,
-#page-header .link {
-  filter: drop-shadow(0 2px 7px rgba(0, 0, 0, 0.12));
+  border: 1px solid rgba(125, 224, 162, 0.6);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(12px);
 }
 
 /* 为主要卡片增加第一张风格的边框 + 玻璃感 */
