@@ -1,0 +1,298 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Floyd算法详解 | Sakura</title><meta name="author" content="Sakura"><meta name="copyright" content="Sakura"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="详细讲解Floyd算法，包括普通实现、路径恢复和连通性判断">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Floyd算法详解">
+<meta property="og:url" content="https://sakura1314lyc.github.io/2026/04/13/Floyd%E7%AE%97%E6%B3%95%E8%AF%A6%E8%A7%A3/index.html">
+<meta property="og:site_name" content="Sakura">
+<meta property="og:description" content="详细讲解Floyd算法，包括普通实现、路径恢复和连通性判断">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://sakura1314lyc.github.io/img/sakura.png">
+<meta property="article:published_time" content="2026-04-13T08:24:00.000Z">
+<meta property="article:modified_time" content="2026-04-13T08:29:43.755Z">
+<meta property="article:author" content="Sakura">
+<meta property="article:tag" content="图论">
+<meta property="article:tag" content="最短路径">
+<meta property="article:tag" content="算法">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sakura1314lyc.github.io/img/sakura.png"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Floyd算法详解",
+  "url": "https://sakura1314lyc.github.io/2026/04/13/Floyd%E7%AE%97%E6%B3%95%E8%AF%A6%E8%A7%A3/",
+  "image": "https://sakura1314lyc.github.io/img/sakura.png",
+  "datePublished": "2026-04-13T08:24:00.000Z",
+  "dateModified": "2026-04-13T08:29:43.755Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "Sakura",
+      "url": "https://sakura1314lyc.github.io"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://sakura1314lyc.github.io/2026/04/13/Floyd%E7%AE%97%E6%B3%95%E8%AF%A6%E8%A7%A3/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.5.4"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.13.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Floyd算法详解',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><meta name="generator" content="Hexo 8.1.1"></head><body><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">Sakura</span></a><a class="nav-page-title" href="/"><span class="site-name">Floyd算法详解</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"></div></nav><div id="post-info"><h1 class="post-title">Floyd算法详解</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-04-13T08:24:00.000Z" title="发表于 2026-04-13 16:24:00">2026-04-13</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-04-13T08:29:43.755Z" title="更新于 2026-04-13 16:29:43">2026-04-13</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%AE%97%E6%B3%95%E5%AD%A6%E4%B9%A0/">算法学习</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="Floyd算法详解"><a href="#Floyd算法详解" class="headerlink" title="Floyd算法详解"></a>Floyd算法详解</h1><h2 id="一、算法简介"><a href="#一、算法简介" class="headerlink" title="一、算法简介"></a>一、算法简介</h2><p>Floyd算法（也称为Floyd-Warshall算法）是一种经典的<strong>多源最短路径</strong>算法，能够在带权图中计算任意两点之间的最短距离。</p>
+<p>主要特点：</p>
+<ul>
+<li>适用于有向图&#x2F;无向图、正权或负权边（但不能处理负权回路）</li>
+<li>使用动态规划思想，直接在邻接矩阵上迭代更新</li>
+<li>一次算法可得到<strong>所有节点对之间</strong>的最短距离</li>
+</ul>
+<p>常见用途：</p>
+<ul>
+<li>求任意两点间最短路</li>
+<li>判断图的连通性（或可达性）</li>
+<li>统计图中最短路径的直径和中心节点</li>
+</ul>
+<hr>
+<h2 id="二、算法复杂度"><a href="#二、算法复杂度" class="headerlink" title="二、算法复杂度"></a>二、算法复杂度</h2><p>Floyd算法的核心是三层嵌套循环：</p>
+<ul>
+<li>外层遍历中间节点<code>k</code></li>
+<li>中间层遍历起点<code>i</code></li>
+<li>内层遍历终点<code>j</code></li>
+</ul>
+<p>因此时间复杂度：<strong>O(n³)</strong>，其中<code>n</code>为节点数。</p>
+<p>空间复杂度：<strong>O(n²)</strong>，因为需要保存距离矩阵。</p>
+<p>⚠️ 当节点数较大时，Floyd算法不适合处理稠密大图；但对于<code>n ≤ 400</code>左右的题目，通常仍然可用。</p>
+<hr>
+<h2 id="三、Floyd算法核心思想"><a href="#三、Floyd算法核心思想" class="headerlink" title="三、Floyd算法核心思想"></a>三、Floyd算法核心思想</h2><p>设<code>dist[i][j]</code>表示当前已知的从节点<code>i</code>到节点<code>j</code>的最短距离。</p>
+<p>初始状态：</p>
+<ul>
+<li>若存在边<code>i-&gt;j</code>，则<code>dist[i][j]=w(i,j)</code></li>
+<li>若<code>i==j</code>，则<code>dist[i][j]=0</code></li>
+<li>否则<code>dist[i][j]=INF</code></li>
+</ul>
+<p>算法逐步考虑允许经过的中间节点：</p>
+<p>对于每个中间节点<code>k</code>，判断是否可以通过<code>k</code>使<code>i-&gt;j</code>更短：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">if dist[i][j] &gt; dist[i][k] + dist[k][j]:</span><br><span class="line">    dist[i][j] = dist[i][k] + dist[k][j]</span><br></pre></td></tr></table></figure>
+
+<p>这样当外层循环完成后，<code>dist[i][j]</code>即为任意两点<code>i,j</code>之间的最短距离。</p>
+<hr>
+<h2 id="四、普通版实现（只求距离矩阵）"><a href="#四、普通版实现（只求距离矩阵）" class="headerlink" title="四、普通版实现（只求距离矩阵）"></a>四、普通版实现（只求距离矩阵）</h2><p>下面是最基础的Floyd算法实现：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="type">const</span> <span class="type">long</span> <span class="type">long</span> INF = <span class="number">4e18</span>;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="type">int</span> n, m;</span><br><span class="line">    cin &gt;&gt; n &gt;&gt; m;</span><br><span class="line">    vector&lt;vector&lt;<span class="type">long</span> <span class="type">long</span>&gt;&gt; <span class="built_in">dist</span>(n + <span class="number">1</span>, <span class="built_in">vector</span>&lt;<span class="type">long</span> <span class="type">long</span>&gt;(n + <span class="number">1</span>, INF));</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i &lt;= n; i++) &#123;</span><br><span class="line">        dist[i][i] = <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; m; i++) &#123;</span><br><span class="line">        <span class="type">int</span> u, v;</span><br><span class="line">        <span class="type">long</span> <span class="type">long</span> w;</span><br><span class="line">        cin &gt;&gt; u &gt;&gt; v &gt;&gt; w;</span><br><span class="line">        dist[u][v] = <span class="built_in">min</span>(dist[u][v], w);</span><br><span class="line">        <span class="comment">// 如果是无向图，下面再加一行</span></span><br><span class="line">        <span class="comment">// dist[v][u] = min(dist[v][u], w);</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> k = <span class="number">1</span>; k &lt;= n; k++) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i &lt;= n; i++) &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="type">int</span> j = <span class="number">1</span>; j &lt;= n; j++) &#123;</span><br><span class="line">                <span class="keyword">if</span> (dist[i][k] &lt; INF &amp;&amp; dist[k][j] &lt; INF) &#123;</span><br><span class="line">                    dist[i][j] = <span class="built_in">min</span>(dist[i][j], dist[i][k] + dist[k][j]);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i &lt;= n; i++) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> j = <span class="number">1</span>; j &lt;= n; j++) &#123;</span><br><span class="line">            <span class="keyword">if</span> (dist[i][j] &gt;= INF / <span class="number">2</span>) cout &lt;&lt; <span class="string">&quot;INF &quot;</span>;</span><br><span class="line">            <span class="keyword">else</span> cout &lt;&lt; dist[i][j] &lt;&lt; <span class="string">&quot; &quot;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        cout &lt;&lt; <span class="string">&#x27;\n&#x27;</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>实现要点：</p>
+<ul>
+<li><code>dist</code>矩阵用于保存当前最短距离</li>
+<li>三重循环依次引入中间节点并松弛所有路径</li>
+<li>不能直接使用<code>INF + INF</code>，需检查是否可达后再更新</li>
+</ul>
+<hr>
+<h2 id="五、带路径恢复的Floyd实现"><a href="#五、带路径恢复的Floyd实现" class="headerlink" title="五、带路径恢复的Floyd实现"></a>五、带路径恢复的Floyd实现</h2><p>仅求最短距离不够，有时还需要输出从<code>u</code>到<code>v</code>的具体路径。我们可以维护一个<code>next[i][j]</code>矩阵：</p>
+<ul>
+<li><code>next[i][j]</code>记录从<code>i</code>出发到<code>j</code>的下一步节点</li>
+</ul>
+<p>初始化时：</p>
+<ul>
+<li>若存在边<code>i-&gt;j</code>，<code>next[i][j] = j</code></li>
+<li>若<code>i==j</code>，<code>next[i][j] = i</code></li>
+<li>否则<code>next[i][j] = -1</code></li>
+</ul>
+<p>更新时：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">if dist[i][j] &gt; dist[i][k] + dist[k][j]:</span><br><span class="line">    dist[i][j] = dist[i][k] + dist[k][j];</span><br><span class="line">    next[i][j] = next[i][k];</span><br></pre></td></tr></table></figure>
+
+<p>当构造路径时，先检查<code>next[u][v]</code>是否为-1；若不是，则从<code>u</code>不断跳到下一节点，直到到达<code>v</code>。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="type">const</span> <span class="type">long</span> <span class="type">long</span> INF = <span class="number">4e18</span>;</span><br><span class="line"></span><br><span class="line"><span class="function">vector&lt;<span class="type">int</span>&gt; <span class="title">get_path</span><span class="params">(<span class="type">int</span> u, <span class="type">int</span> v, <span class="type">const</span> vector&lt;vector&lt;<span class="type">int</span>&gt;&gt;&amp; next)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (next[u][v] == <span class="number">-1</span>) <span class="keyword">return</span> &#123;&#125;;</span><br><span class="line">    vector&lt;<span class="type">int</span>&gt; path;</span><br><span class="line">    <span class="type">int</span> cur = u;</span><br><span class="line">    <span class="keyword">while</span> (cur != v) &#123;</span><br><span class="line">        path.<span class="built_in">push_back</span>(cur);</span><br><span class="line">        cur = next[cur][v];</span><br><span class="line">        <span class="keyword">if</span> (cur == <span class="number">-1</span>) <span class="keyword">return</span> &#123;&#125;;</span><br><span class="line">    &#125;</span><br><span class="line">    path.<span class="built_in">push_back</span>(v);</span><br><span class="line">    <span class="keyword">return</span> path;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="type">int</span> n, m;</span><br><span class="line">    cin &gt;&gt; n &gt;&gt; m;</span><br><span class="line">    vector&lt;vector&lt;<span class="type">long</span> <span class="type">long</span>&gt;&gt; <span class="built_in">dist</span>(n + <span class="number">1</span>, <span class="built_in">vector</span>&lt;<span class="type">long</span> <span class="type">long</span>&gt;(n + <span class="number">1</span>, INF));</span><br><span class="line">    vector&lt;vector&lt;<span class="type">int</span>&gt;&gt; <span class="built_in">next</span>(n + <span class="number">1</span>, <span class="built_in">vector</span>&lt;<span class="type">int</span>&gt;(n + <span class="number">1</span>, <span class="number">-1</span>));</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i &lt;= n; i++) &#123;</span><br><span class="line">        dist[i][i] = <span class="number">0</span>;</span><br><span class="line">        next[i][i] = i;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; m; i++) &#123;</span><br><span class="line">        <span class="type">int</span> u, v;</span><br><span class="line">        <span class="type">long</span> <span class="type">long</span> w;</span><br><span class="line">        cin &gt;&gt; u &gt;&gt; v &gt;&gt; w;</span><br><span class="line">        <span class="keyword">if</span> (w &lt; dist[u][v]) &#123;</span><br><span class="line">            dist[u][v] = w;</span><br><span class="line">            next[u][v] = v;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 无向图则添加 dist[v][u] = min(dist[v][u], w); next[v][u] = u;</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> k = <span class="number">1</span>; k &lt;= n; k++) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i &lt;= n; i++) &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="type">int</span> j = <span class="number">1</span>; j &lt;= n; j++) &#123;</span><br><span class="line">                <span class="keyword">if</span> (dist[i][k] &lt; INF &amp;&amp; dist[k][j] &lt; INF &amp;&amp; dist[i][j] &gt; dist[i][k] + dist[k][j]) &#123;</span><br><span class="line">                    dist[i][j] = dist[i][k] + dist[k][j];</span><br><span class="line">                    next[i][j] = next[i][k];</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="type">int</span> u, v;</span><br><span class="line">    cin &gt;&gt; u &gt;&gt; v;</span><br><span class="line">    vector&lt;<span class="type">int</span>&gt; path = <span class="built_in">get_path</span>(u, v, next);</span><br><span class="line">    <span class="keyword">if</span> (path.<span class="built_in">empty</span>()) &#123;</span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;No path\n&quot;</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> x : path) cout &lt;&lt; x &lt;&lt; <span class="string">&quot; &quot;</span>;</span><br><span class="line">        cout &lt;&lt; <span class="string">&#x27;\n&#x27;</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>注意：带路径恢复时，<code>next[i][k]</code>必须保持来自<code>i</code>到<code>k</code>的第一跳，而不是来自<code>k</code>到<code>j</code>的第一跳。</p>
+<hr>
+<h2 id="六、判断连通性的Floyd用法"><a href="#六、判断连通性的Floyd用法" class="headerlink" title="六、判断连通性的Floyd用法"></a>六、判断连通性的Floyd用法</h2><p>Floyd算法还可以用来判断图的可达性或连通性。对于无向图：</p>
+<ul>
+<li>如果最终<code>dist[i][j] &lt; INF</code>，说明节点<code>i</code>和<code>j</code>连通</li>
+<li>如果某个节点对仍然不可达，则说明图不是连通图</li>
+</ul>
+<p>对于有向图，则可以判断强连通性：</p>
+<ul>
+<li>如果对任意<code>i,j</code>都有<code>dist[i][j] &lt; INF</code>，说明图是强连通的</li>
+</ul>
+<p>基于<code>dist</code>矩阵，还可以求：</p>
+<ul>
+<li>图的连通分量数</li>
+<li>最远可达距离</li>
+<li>是否存在负权回路（若<code>dist[i][i] &lt; 0</code>则存在）</li>
+</ul>
+<h3 id="连通性判断代码示例"><a href="#连通性判断代码示例" class="headerlink" title="连通性判断代码示例"></a>连通性判断代码示例</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> components = <span class="number">0</span>;</span><br><span class="line"><span class="function">vector&lt;<span class="type">bool</span>&gt; <span class="title">seen</span><span class="params">(n + <span class="number">1</span>, <span class="literal">false</span>)</span></span>;</span><br><span class="line"><span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i &lt;= n; i++) &#123;</span><br><span class="line">    <span class="type">bool</span> ok = <span class="literal">true</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> j = <span class="number">1</span>; j &lt;= n; j++) &#123;</span><br><span class="line">        <span class="keyword">if</span> (i != j &amp;&amp; dist[i][j] &gt;= INF) &#123;</span><br><span class="line">            ok = <span class="literal">false</span>;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (ok) components++;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>对于无向图，只要所有<code>i,j</code>满足可达，则图是连通的。</p>
+<hr>
+<h2 id="七、详解与例子"><a href="#七、详解与例子" class="headerlink" title="七、详解与例子"></a>七、详解与例子</h2><h3 id="1-为什么需要三重循环"><a href="#1-为什么需要三重循环" class="headerlink" title="1. 为什么需要三重循环"></a>1. 为什么需要三重循环</h3><p>Floyd算法的三重循环对应的是：</p>
+<ul>
+<li>允许经过的中间节点<code>k</code></li>
+<li>起点<code>i</code></li>
+<li>终点<code>j</code></li>
+</ul>
+<p>当<code>k</code>确定后，<code>dist[i][j]</code>表示仅允许经过<code>1..k</code>这些节点时的最短距离。随着<code>k</code>增加，迭代式地引入更多中间节点，最终得到全局最短路径。</p>
+<h3 id="2-例子说明"><a href="#2-例子说明" class="headerlink" title="2. 例子说明"></a>2. 例子说明</h3><p>假设有3个节点的有向图：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">1 -&gt; 2, 权重 2</span><br><span class="line">2 -&gt; 3, 权重 3</span><br><span class="line">1 -&gt; 3, 权重 10</span><br></pre></td></tr></table></figure>
+
+<p>初始距离矩阵：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">0   2  10</span><br><span class="line">INF 0   3</span><br><span class="line">INF INF 0</span><br></pre></td></tr></table></figure>
+
+<p>第一个中间节点<code>k=1</code>时：</p>
+<ul>
+<li><code>dist[2][3]</code>不变</li>
+<li><code>dist[1][3]</code>保持10，因为<code>1-&gt;1-&gt;3</code>没有更短</li>
+</ul>
+<p>第二个中间节点<code>k=2</code>时：</p>
+<ul>
+<li><code>dist[1][3]</code>可通过<code>1-&gt;2-&gt;3</code>更新为5</li>
+</ul>
+<p>最终结果：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">0 2 5</span><br><span class="line">INF 0 3</span><br><span class="line">INF INF 0</span><br></pre></td></tr></table></figure>
+
+<p>若需要路径恢复，则<code>next[1][3]</code>会从<code>3</code>更新为<code>2</code>，表示从1到3的第一步是先走到2。</p>
+<hr>
+<h2 id="八、Floyd算法使用建议"><a href="#八、Floyd算法使用建议" class="headerlink" title="八、Floyd算法使用建议"></a>八、Floyd算法使用建议</h2><ul>
+<li>如果只需要单源最短路，优先选择Dijkstra、SPFA或Bellman-Ford</li>
+<li>如果需要任意两点最短路，且节点数较小，Floyd是最简单稳定的选择</li>
+<li>若图有较多边且节点数大，通常应避免直接使用Floyd</li>
+<li>对于连通性判断、强连通性、负权回路检测，Floyd可以一次性解决多个问题</li>
+</ul>
+<hr>
+<h2 id="九、练习题目推荐"><a href="#九、练习题目推荐" class="headerlink" title="九、练习题目推荐"></a>九、练习题目推荐</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/P2059">洛谷 P2059 【模板】最短路问题</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/P2581">洛谷 P2581 【模板】道路修建</a></li>
+<li><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/network-delay-time/">LeetCode 743. 网络延迟时间</a></li>
+<li><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/all-paths-from-source-to-target/">LeetCode 797. 所有可能的路径</a></li>
+<li><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/course-schedule-iv/">力扣 1462. 课程表 IV</a></li>
+</ul>
+<hr>
+<h2 id="十、总结"><a href="#十、总结" class="headerlink" title="十、总结"></a>十、总结</h2><p>Floyd算法适合用于求任意两点最短路径、恢复路径以及连通性分析。它简单、统一，但时间复杂度为<code>O(n³)</code>，适合<code>n</code>较小的场景。</p>
+<p>本文介绍了：</p>
+<ul>
+<li>普通版Floyd实现</li>
+<li>带路径恢复的Floyd</li>
+<li>基于Floyd判断连通性的用法</li>
+<li>算法复杂度与使用建议</li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://sakura1314lyc.github.io">Sakura</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://sakura1314lyc.github.io/2026/04/13/Floyd%E7%AE%97%E6%B3%95%E8%AF%A6%E8%A7%A3/">https://sakura1314lyc.github.io/2026/04/13/Floyd%E7%AE%97%E6%B3%95%E8%AF%A6%E8%A7%A3/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://sakura1314lyc.github.io" target="_blank">Sakura</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E7%AE%97%E6%B3%95/">算法</a><a class="post-meta__tags" href="/tags/%E5%9B%BE%E8%AE%BA/">图论</a><a class="post-meta__tags" href="/tags/%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84/">最短路径</a></div><div class="post-share"><div class="social-share" data-image="/img/sakura.png" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related full-width" href="/2026/04/06/Dijkstra%E7%AE%97%E6%B3%95%E8%AF%A6%E8%A7%A3/" title="Dijkstra算法详解"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">Dijkstra算法详解</div></div><div class="info-2"><div class="info-item-1">Dijkstra算法详解及两种代码实现一、算法简介Dijkstra算法是图论中单源最短路径的经典算法，用于计算一个节点到其他所有节点的最短路径。 主要特点：  适用于非负权边的图（有向&#x2F;无向均可） 贪心策略：每次选择距离起点最近且未访问的节点 时间复杂度： 普通版：O(n²)（适合稠密图或n&lt;1000） 堆优化版：O(mlogn)（适合稀疏图，m为边数）    ⚠️注意：算法不能处理带有负权边的图！ 若图中有负权边，应使用Bellman-Ford或SPFA算法。  二、算法核心思想 初始化：  起点距离为0，其他节点距离为无穷大 所有节点标记为未访问   重复以下步骤直到所有节点被访问：  从未访问节点中选出距离起点最近的节点u 标记u为已访问 遍历u的所有邻居v： 若dist[u] + w(u,v) &lt; dist[v]，则更新dist[v]     最终dist数组存储起点到各节点的最短距离    三、代码实现1：普通版（O(n²)）适合节点数较少（n ≤ 1000）或稠密图的场景。 123456789101112131415161718192021222...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2026/04/06/Dijkstra%E7%AE%97%E6%B3%95%E8%AF%A6%E8%A7%A3/" title="Dijkstra算法详解"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-04-06</div><div class="info-item-2">Dijkstra算法详解</div></div><div class="info-2"><div class="info-item-1">Dijkstra算法详解及两种代码实现一、算法简介Dijkstra算法是图论中单源最短路径的经典算法，用于计算一个节点到其他所有节点的最短路径。 主要特点：  适用于非负权边的图（有向&#x2F;无向均可） 贪心策略：每次选择距离起点最近且未访问的节点 时间复杂度： 普通版：O(n²)（适合稠密图或n&lt;1000） 堆优化版：O(mlogn)（适合稀疏图，m为边数）    ⚠️注意：算法不能处理带有负权边的图！ 若图中有负权边，应使用Bellman-Ford或SPFA算法。  二、算法核心思想 初始化：  起点距离为0，其他节点距离为无穷大 所有节点标记为未访问   重复以下步骤直到所有节点被访问：  从未访问节点中选出距离起点最近的节点u 标记u为已访问 遍历u的所有邻居v： 若dist[u] + w(u,v) &lt; dist[v]，则更新dist[v]     最终dist数组存储起点到各节点的最短距离    三、代码实现1：普通版（O(n²)）适合节点数较少（n ≤ 1000）或稠密图的场景。 123456789101112131415161718192021222...</div></div></div></a><a class="pagination-related no-desc" href="/2026/03/16/%E5%8F%8C%E6%8C%87%E9%92%88%E6%8A%80%E5%B7%A7/" title="双指针技巧"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-03-16</div><div class="info-item-2">双指针技巧</div></div></div></a><a class="pagination-related" href="/2026/03/17/%E4%BA%8C%E5%88%86%E7%AD%94%E6%A1%88%E7%AE%97%E6%B3%95/" title="二分答案（Binary Search on Answer）详解"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-03-17</div><div class="info-item-2">二分答案（Binary Search on Answer）详解</div></div><div class="info-2"><div class="info-item-1">二分答案是二分搜索的进阶应用，常用于解决 最值问题（最大&#x2F;最小）。   与普通二分搜索不同，它不是在数组中找元素，而是在答案空间中寻找最优解。    一、什么是二分答案？二分答案的核心思想是：  对答案进行二分，而不是对数据进行二分   📌 典型特征当题目满足以下条件时，可以考虑使用二分答案：  求 最小值最大化 &#x2F; 最大值最小化 问 是否可以做到某件事 存在“至少 &#x2F; 至多 &#x2F; 不超过”等限制 答案具有单调性   🧠 举个例子 给一个数组，把它分成 k 段，使得每段的和的最大值最小  👉 你要找的不是位置，而是一个“答案值”  二、核心模板123456789101112131415161718192021bool check(int mid) &#123;    // 判断当答案为 mid 时，是否满足条件&#125;int solve() &#123;    int left = 最小可能答案;    int right = 最大可能答案;    while (left &lt; right) &#123;        int ...</div></div></div></a><a class="pagination-related" href="/2026/03/12/%E4%BA%8C%E5%88%86%E6%90%9C%E7%B4%A2%E7%AE%97%E6%B3%95/" title="二分搜索模板"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-03-12</div><div class="info-item-2">二分搜索模板</div></div><div class="info-2"><div class="info-item-1">二分搜索通常用于解决 单调函数问题。二分思想的核心在于快速收缩搜索区间如果函数 f(x) 随着 x 单调变化，就可以使用二分搜索寻找满足条件的 x。    一、二分搜索通用模板12345678910111213141516171819202122232425262728293031323334// 函数 f 是关于自变量 x 的单调函数int f(int x) &#123;    // ...&#125;// 主函数，在 f(x) == target 的约束下求 x 的最值int solution(vector&lt;int&gt;&amp; nums, int target) &#123;    if (nums.size() == 0) return -1;    // 问自己：自变量 x 的最小值是多少？    int left = ...;    // 问自己：自变量 x 的最大值是多少？    int right = ... + 1;    while (left &lt; right) &#123;        int mid = left + (right - l...</div></div></div></a><a class="pagination-related" href="/2026/03/11/%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3%E7%AE%97%E6%B3%95/" title="滑动窗口算法"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-03-11</div><div class="info-item-2">滑动窗口算法</div></div><div class="info-2"><div class="info-item-1">滑动窗口可以归为 快慢双指针算法。使用一快一慢两个指针前后相随，中间的部分就是一个“窗口”。 滑动窗口算法技巧主要用来解决 子数组或子串问题，例如：  寻找符合某个条件的 最长子数组 寻找符合某个条件的 最短子数组 统计满足条件的子串数量   一、滑动窗口的基本思想滑动窗口算法的核心思想是：  维护一个窗口，不断向右滑动，并在过程中更新答案。  基本逻辑如下： 1234567891011121314// 索引区间 [left, right) 是窗口int left = 0, right = 0;while (right &lt; nums.size()) &#123;    // 增大窗口    window.addLast(nums[right]);    right++;    while (needShrink) &#123;        // 缩小窗口        window.removeFirst(nums[left]);        left++;    &#125;&#125; 二、 注意事项滑动窗口并不能穷举所有子串如果题目要求穷举所有子串，一般需要使用两...</div></div></div></a><a class="pagination-related" href="/2026/03/16/%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95-%E4%BB%8E%E5%88%9D%E7%BA%A7%E5%88%B0%E9%AB%98%E7%BA%A7/" title="排序算法-从入门到进阶"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-03-16</div><div class="info-item-2">排序算法-从入门到进阶</div></div><div class="info-2"><div class="info-item-1">排序算法是算法学习中的基础内容，也是面试和刷题中非常高频的知识点。这篇文章按照 从简单到进阶 的顺序，整理常见排序算法，包括：  冒泡排序 选择排序 插入排序 希尔排序 归并排序 快速排序 堆排序 计数排序 桶排序 基数排序   一、排序算法总览   排序算法 平均时间复杂度 最坏时间复杂度 空间复杂度 稳定性    冒泡排序 O(n^2) O(n^2) O(1) 稳定   选择排序 O(n^2) O(n^2) O(1) 不稳定   插入排序 O(n^2) O(n^2) O(1) 稳定   希尔排序 约 O(n^1.3 ~ n^2) O(n^2) O(1) 不稳定   归并排序 O(nlogn) O(nlogn) O(n) 稳定   快速排序 O(nlogn) O(n^2) O(logn) 不稳定   堆排序 O(nlogn) O(nlogn) O(1) 不稳定   计数排序 O(n + k) O(n + k) O(k) 稳定   桶排序 视分布而定 最坏 O(n^2) O(n + k) 取决于桶内排序   基数排序 O(d(n + k)) O(d(n + k)) O(n + k...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/sakura.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Sakura</div><div class="author-info-description">记录技术与二次元相关的内容</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">10</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">18</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/Sakura1314lyc"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/Sakura1314lyc" target="_blank" title="Github"><i class="fab fa-github"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Floyd%E7%AE%97%E6%B3%95%E8%AF%A6%E8%A7%A3"><span class="toc-number">1.</span> <span class="toc-text">Floyd算法详解</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E7%AE%97%E6%B3%95%E7%AE%80%E4%BB%8B"><span class="toc-number">1.1.</span> <span class="toc-text">一、算法简介</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E7%AE%97%E6%B3%95%E5%A4%8D%E6%9D%82%E5%BA%A6"><span class="toc-number">1.2.</span> <span class="toc-text">二、算法复杂度</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81Floyd%E7%AE%97%E6%B3%95%E6%A0%B8%E5%BF%83%E6%80%9D%E6%83%B3"><span class="toc-number">1.3.</span> <span class="toc-text">三、Floyd算法核心思想</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E6%99%AE%E9%80%9A%E7%89%88%E5%AE%9E%E7%8E%B0%EF%BC%88%E5%8F%AA%E6%B1%82%E8%B7%9D%E7%A6%BB%E7%9F%A9%E9%98%B5%EF%BC%89"><span class="toc-number">1.4.</span> <span class="toc-text">四、普通版实现（只求距离矩阵）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%94%E3%80%81%E5%B8%A6%E8%B7%AF%E5%BE%84%E6%81%A2%E5%A4%8D%E7%9A%84Floyd%E5%AE%9E%E7%8E%B0"><span class="toc-number">1.5.</span> <span class="toc-text">五、带路径恢复的Floyd实现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AD%E3%80%81%E5%88%A4%E6%96%AD%E8%BF%9E%E9%80%9A%E6%80%A7%E7%9A%84Floyd%E7%94%A8%E6%B3%95"><span class="toc-number">1.6.</span> <span class="toc-text">六、判断连通性的Floyd用法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%9E%E9%80%9A%E6%80%A7%E5%88%A4%E6%96%AD%E4%BB%A3%E7%A0%81%E7%A4%BA%E4%BE%8B"><span class="toc-number">1.6.1.</span> <span class="toc-text">连通性判断代码示例</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%83%E3%80%81%E8%AF%A6%E8%A7%A3%E4%B8%8E%E4%BE%8B%E5%AD%90"><span class="toc-number">1.7.</span> <span class="toc-text">七、详解与例子</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9C%80%E8%A6%81%E4%B8%89%E9%87%8D%E5%BE%AA%E7%8E%AF"><span class="toc-number">1.7.1.</span> <span class="toc-text">1. 为什么需要三重循环</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E4%BE%8B%E5%AD%90%E8%AF%B4%E6%98%8E"><span class="toc-number">1.7.2.</span> <span class="toc-text">2. 例子说明</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AB%E3%80%81Floyd%E7%AE%97%E6%B3%95%E4%BD%BF%E7%94%A8%E5%BB%BA%E8%AE%AE"><span class="toc-number">1.8.</span> <span class="toc-text">八、Floyd算法使用建议</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B9%9D%E3%80%81%E7%BB%83%E4%B9%A0%E9%A2%98%E7%9B%AE%E6%8E%A8%E8%8D%90"><span class="toc-number">1.9.</span> <span class="toc-text">九、练习题目推荐</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%81%E3%80%81%E6%80%BB%E7%BB%93"><span class="toc-number">1.10.</span> <span class="toc-text">十、总结</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/13/Floyd%E7%AE%97%E6%B3%95%E8%AF%A6%E8%A7%A3/" title="Floyd算法详解">Floyd算法详解</a><time datetime="2026-04-13T08:24:00.000Z" title="发表于 2026-04-13 16:24:00">2026-04-13</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/06/Dijkstra%E7%AE%97%E6%B3%95%E8%AF%A6%E8%A7%A3/" title="Dijkstra算法详解">Dijkstra算法详解</a><time datetime="2026-04-06T14:46:23.000Z" title="发表于 2026-04-06 22:46:23">2026-04-06</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/03/21/Go-%E5%8F%98%E9%87%8F%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F/" title="Go 语言变量类型系统">Go 语言变量类型系统</a><time datetime="2026-03-21T02:30:00.000Z" title="发表于 2026-03-21 10:30:00">2026-03-21</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/03/20/Go-slice-%E6%88%AA%E5%8F%96-vs-copy-%E7%9A%84%E5%8C%BA%E5%88%AB%E8%AF%A6%E8%A7%A3/" title="Go slice 截取 vs copy 的区别详解">Go slice 截取 vs copy 的区别详解</a><time datetime="2026-03-20T06:30:00.000Z" title="发表于 2026-03-20 14:30:00">2026-03-20</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/03/18/%E4%BB%8A%E6%97%A5%E7%95%AA%E5%89%A7%E6%8E%A8%E8%8D%90-%E6%AD%A3%E7%9B%B8%E5%8F%8D%E7%9A%84%E4%BD%A0%E5%92%8C%E6%88%91/" title="今日番剧推荐:正相反的你和我"><img src="/img/xianfandeni.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="今日番剧推荐:正相反的你和我"/></a><div class="content"><a class="title" href="/2026/03/18/%E4%BB%8A%E6%97%A5%E7%95%AA%E5%89%A7%E6%8E%A8%E8%8D%90-%E6%AD%A3%E7%9B%B8%E5%8F%8D%E7%9A%84%E4%BD%A0%E5%92%8C%E6%88%91/" title="今日番剧推荐:正相反的你和我">今日番剧推荐:正相反的你和我</a><time datetime="2026-03-18T06:28:56.000Z" title="发表于 2026-03-18 14:28:56">2026-03-18</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By Sakura</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.1.1</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.5.4</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.5.4"></script><script src="/js/main.js?v=5.5.4"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div><script src="/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":null,"pluginJsPath":null,"log":false,"pluginModelPath":"assets/","tagMode":false});</script></body></html>

@@ -1,0 +1,240 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Dijkstra算法详解 | Sakura</title><meta name="author" content="Sakura"><meta name="copyright" content="Sakura"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="详细讲解Dijkstra算法原理，并提供C++普通版与优先队列优化版代码">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Dijkstra算法详解">
+<meta property="og:url" content="https://sakura1314lyc.github.io/2026/04/06/Dijkstra%E7%AE%97%E6%B3%95%E8%AF%A6%E8%A7%A3/index.html">
+<meta property="og:site_name" content="Sakura">
+<meta property="og:description" content="详细讲解Dijkstra算法原理，并提供C++普通版与优先队列优化版代码">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://sakura1314lyc.github.io/img/sakura.png">
+<meta property="article:published_time" content="2026-04-06T14:46:23.000Z">
+<meta property="article:modified_time" content="2026-04-06T14:58:38.682Z">
+<meta property="article:author" content="Sakura">
+<meta property="article:tag" content="图论">
+<meta property="article:tag" content="最短路径">
+<meta property="article:tag" content="算法">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sakura1314lyc.github.io/img/sakura.png"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Dijkstra算法详解",
+  "url": "https://sakura1314lyc.github.io/2026/04/06/Dijkstra%E7%AE%97%E6%B3%95%E8%AF%A6%E8%A7%A3/",
+  "image": "https://sakura1314lyc.github.io/img/sakura.png",
+  "datePublished": "2026-04-06T14:46:23.000Z",
+  "dateModified": "2026-04-06T14:58:38.682Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "Sakura",
+      "url": "https://sakura1314lyc.github.io"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://sakura1314lyc.github.io/2026/04/06/Dijkstra%E7%AE%97%E6%B3%95%E8%AF%A6%E8%A7%A3/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.5.4"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.13.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Dijkstra算法详解',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><meta name="generator" content="Hexo 8.1.1"></head><body><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">Sakura</span></a><a class="nav-page-title" href="/"><span class="site-name">Dijkstra算法详解</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"></div></nav><div id="post-info"><h1 class="post-title">Dijkstra算法详解</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-04-06T14:46:23.000Z" title="发表于 2026-04-06 22:46:23">2026-04-06</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-04-06T14:58:38.682Z" title="更新于 2026-04-06 22:58:38">2026-04-06</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%AE%97%E6%B3%95%E5%AD%A6%E4%B9%A0/">算法学习</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="Dijkstra算法详解及两种代码实现"><a href="#Dijkstra算法详解及两种代码实现" class="headerlink" title="Dijkstra算法详解及两种代码实现"></a>Dijkstra算法详解及两种代码实现</h1><h2 id="一、算法简介"><a href="#一、算法简介" class="headerlink" title="一、算法简介"></a>一、算法简介</h2><p>Dijkstra算法是图论中<strong>单源最短路径</strong>的经典算法，用于计算一个节点到其他所有节点的最短路径。</p>
+<p><strong>主要特点：</strong></p>
+<ul>
+<li>适用于<strong>非负权边</strong>的图（有向&#x2F;无向均可）</li>
+<li>贪心策略：每次选择距离起点最近且未访问的节点</li>
+<li>时间复杂度：<ul>
+<li>普通版：O(n²)（适合稠密图或n&lt;1000）</li>
+<li>堆优化版：O(mlogn)（适合稀疏图，m为边数）</li>
+</ul>
+</li>
+</ul>
+<p><strong>⚠️注意：算法不能处理带有负权边的图！</strong> 若图中有负权边，应使用Bellman-Ford或SPFA算法。</p>
+<hr>
+<h2 id="二、算法核心思想"><a href="#二、算法核心思想" class="headerlink" title="二、算法核心思想"></a>二、算法核心思想</h2><ol>
+<li><p>初始化：</p>
+<ul>
+<li>起点距离为0，其他节点距离为无穷大</li>
+<li>所有节点标记为未访问</li>
+</ul>
+</li>
+<li><p>重复以下步骤直到所有节点被访问：</p>
+<ul>
+<li>从<strong>未访问节点</strong>中选出距离起点<strong>最近</strong>的节点u</li>
+<li>标记u为已访问</li>
+<li>遍历u的所有邻居v：<ul>
+<li>若<code>dist[u] + w(u,v) &lt; dist[v]</code>，则更新dist[v]</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>最终dist数组存储起点到各节点的最短距离</p>
+</li>
+</ol>
+<hr>
+<h2 id="三、代码实现1：普通版（O-n²-）"><a href="#三、代码实现1：普通版（O-n²-）" class="headerlink" title="三、代码实现1：普通版（O(n²)）"></a>三、代码实现1：普通版（O(n²)）</h2><p>适合节点数较少（n ≤ 1000）或稠密图的场景。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="type">const</span> <span class="type">int</span> INF = <span class="number">1e9</span>;</span><br><span class="line"><span class="type">const</span> <span class="type">int</span> N = <span class="number">1005</span>;</span><br><span class="line"><span class="type">int</span> n, m;</span><br><span class="line">vector&lt;pair&lt;<span class="type">int</span>,<span class="type">int</span>&gt;&gt; g[N]; <span class="comment">// g[u] = &#123;v, w&#125;</span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> dist[N];</span><br><span class="line"><span class="type">bool</span> vis[N];</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">dijkstra</span><span class="params">(<span class="type">int</span> start)</span></span>&#123;</span><br><span class="line">    <span class="comment">// 初始化</span></span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">1</span>; i &lt;= n; i++)&#123;</span><br><span class="line">        dist[i] = INF;</span><br><span class="line">        vis[i] = <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    dist[start] = <span class="number">0</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 主循环：每次选一个节点</span></span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">1</span>; i &lt;= n; i++)&#123;</span><br><span class="line">        <span class="type">int</span> u = <span class="number">-1</span>;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 1. 找到未访问中距离最小的节点</span></span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> j = <span class="number">1</span>; j &lt;= n; j++)&#123;</span><br><span class="line">            <span class="keyword">if</span>(!vis[j] &amp;&amp; (u == <span class="number">-1</span> || dist[j] &lt; dist[u]))&#123;</span><br><span class="line">                u = j;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 若剩余节点都不可达，提前退出</span></span><br><span class="line">        <span class="keyword">if</span>(dist[u] == INF) <span class="keyword">break</span>;</span><br><span class="line">        </span><br><span class="line">        vis[u] = <span class="literal">true</span>;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 2. 更新邻居的距离</span></span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">auto</span> [v, w] : g[u])&#123;</span><br><span class="line">            <span class="keyword">if</span>(dist[v] &gt; dist[u] + w)&#123;</span><br><span class="line">                dist[v] = dist[u] + w;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    cin &gt;&gt; n &gt;&gt; m;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">0</span>; i &lt; m; i++)&#123;</span><br><span class="line">        <span class="type">int</span> u, v, w;</span><br><span class="line">        cin &gt;&gt; u &gt;&gt; v &gt;&gt; w;</span><br><span class="line">        g[u].<span class="built_in">push_back</span>(&#123;v, w&#125;);</span><br><span class="line">        <span class="comment">// 若为无向图，加上下面一行</span></span><br><span class="line">        <span class="comment">// g[v].push_back(&#123;u, w&#125;);</span></span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">dijkstra</span>(<span class="number">1</span>);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">1</span>; i &lt;= n; i++)&#123;</span><br><span class="line">        cout &lt;&lt; dist[i] &lt;&lt; <span class="string">&quot; &quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>代码要点：</p>
+<ul>
+<li>用vis[]数组标记已确定最短路的节点</li>
+<li>每次暴力扫描所有节点找最小值（O(n)）</li>
+<li>更新邻居距离（总O(m)）</li>
+<li>总复杂度O(n² + m)</li>
+</ul>
+<h2 id="四、代码实现2：堆优化版（O-mlogn-）"><a href="#四、代码实现2：堆优化版（O-mlogn-）" class="headerlink" title="四、代码实现2：堆优化版（O(mlogn)）"></a>四、代码实现2：堆优化版（O(mlogn)）</h2><p>使用优先队列快速获取最小节点，适合稀疏图</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="type">const</span> <span class="type">int</span> INF = <span class="number">1e9</span>;</span><br><span class="line"><span class="type">const</span> <span class="type">int</span> N = <span class="number">1005</span>;</span><br><span class="line"><span class="type">int</span> n, m;</span><br><span class="line">vector&lt;pair&lt;<span class="type">int</span>,<span class="type">int</span>&gt;&gt; g[N];</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> dist[N];</span><br><span class="line"><span class="type">bool</span> vis[N];</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">dijkstra</span><span class="params">(<span class="type">int</span> start)</span></span>&#123;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">1</span>; i &lt;= n; i++)&#123;</span><br><span class="line">        dist[i] = INF;</span><br><span class="line">        vis[i] = <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 小根堆：&#123;距离, 节点&#125;</span></span><br><span class="line">    priority_queue&lt;pair&lt;<span class="type">int</span>, <span class="type">int</span>&gt;, vector&lt;pair&lt;<span class="type">int</span>,<span class="type">int</span>&gt;&gt;, greater&lt;&gt;&gt; pq;</span><br><span class="line">    </span><br><span class="line">    dist[start] = <span class="number">0</span>;</span><br><span class="line">    pq.<span class="built_in">push</span>(&#123;<span class="number">0</span>, start&#125;);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">while</span>(!pq.<span class="built_in">empty</span>())&#123;</span><br><span class="line">        <span class="keyword">auto</span> [d, u] = pq.<span class="built_in">top</span>();</span><br><span class="line">        pq.<span class="built_in">pop</span>();</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 如果已经访问过，跳过（因为可能有旧数据）</span></span><br><span class="line">        <span class="keyword">if</span>(vis[u]) <span class="keyword">continue</span>;</span><br><span class="line">        vis[u] = <span class="literal">true</span>;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 遍历邻居</span></span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">auto</span> [v, w] : g[u])&#123;</span><br><span class="line">            <span class="keyword">if</span>(dist[v] &gt; dist[u] + w)&#123;</span><br><span class="line">                dist[v] = dist[u] + w;</span><br><span class="line">                pq.<span class="built_in">push</span>(&#123;dist[v], v&#125;);  <span class="comment">// 可能重复入队，但vis会过滤</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    cin &gt;&gt; n &gt;&gt; m;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">0</span>; i &lt; m; i++)&#123;</span><br><span class="line">        <span class="type">int</span> u, v, w;</span><br><span class="line">        cin &gt;&gt; u &gt;&gt; v &gt;&gt; w;</span><br><span class="line">        g[u].<span class="built_in">push_back</span>(&#123;v, w&#125;);</span><br><span class="line">        <span class="comment">// 无向图加上下面一行</span></span><br><span class="line">        <span class="comment">// g[v].push_back(&#123;u, w&#125;);</span></span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">dijkstra</span>(<span class="number">1</span>);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">1</span>; i &lt;= n; i++)&#123;</span><br><span class="line">        cout &lt;&lt; dist[i] &lt;&lt; <span class="string">&quot; &quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>优化原理：</p>
+<ul>
+<li>用优先队列自动维护“当前最近节点”</li>
+<li>每个节点可能多次入队（当发现更短路径时），但只会处理一次（vis控制）</li>
+<li>时间复杂度：O(mlogn)（每条边最多导致一次入队操作</li>
+</ul>
+<h2 id="五、常见问题"><a href="#五、常见问题" class="headerlink" title="五、常见问题"></a>五、常见问题</h2><ol>
+<li><p>为什么不能处理负权边<br>Dijkstra的贪心策略基于“已访问节点的距离不会再变小”，但负权边可能导致已访问节点距离被后续节点更新，从而破坏正确性。</p>
+</li>
+<li><p>如何处理无向图<br>在添加边时，同时添加两条有向边：</p>
+</li>
+</ol>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">g[u].<span class="built_in">push_back</span>(&#123;v, w&#125;);</span><br><span class="line">g[v].<span class="built_in">push_back</span>(&#123;u, w&#125;);  <span class="comment">// 无向图加上此行</span></span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li><p>堆优化版为什么需要vis数组？<br>因为一个节点可能被多次加入优先队列（当找到更短路径时），但第一次出队时已经得到最终最短距离，后续出队应该跳过，避免重复处理。</p>
+</li>
+<li><p>起点到某些节点不可达怎么办？<br>距离保持为INF（初始值），输出时通常根据题意处理（如输出-1或”∞”）。</p>
+</li>
+</ol>
+<h2 id="六、总结"><a href="#六、总结" class="headerlink" title="六、总结"></a>六、总结</h2><p>Dijkstra是单源非负权最短路的首选算法</p>
+<ul>
+<li>普通版简单易懂，适合小规模数据</li>
+<li>堆优化版效率高，是大数据量的标准写法</li>
+<li>熟练掌握两种写法，根据题目数据范围灵活选择</li>
+</ul>
+<h2 id="练习题目推荐"><a href="#练习题目推荐" class="headerlink" title="练习题目推荐"></a>练习题目推荐</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/P3371">洛谷 P3371 【模板】单源最短路径（弱化版）</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/P4779">洛谷 P4779 【模板】单源最短路径（标准版）</a></li>
+<li><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/network-delay-time/">LeetCode 743. 网络延迟时间</a></li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://sakura1314lyc.github.io">Sakura</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://sakura1314lyc.github.io/2026/04/06/Dijkstra%E7%AE%97%E6%B3%95%E8%AF%A6%E8%A7%A3/">https://sakura1314lyc.github.io/2026/04/06/Dijkstra%E7%AE%97%E6%B3%95%E8%AF%A6%E8%A7%A3/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://sakura1314lyc.github.io" target="_blank">Sakura</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E7%AE%97%E6%B3%95/">算法</a><a class="post-meta__tags" href="/tags/%E5%9B%BE%E8%AE%BA/">图论</a><a class="post-meta__tags" href="/tags/%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84/">最短路径</a></div><div class="post-share"><div class="social-share" data-image="/img/sakura.png" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2026/04/13/Floyd%E7%AE%97%E6%B3%95%E8%AF%A6%E8%A7%A3/" title="Floyd算法详解"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">Floyd算法详解</div></div><div class="info-2"><div class="info-item-1">Floyd算法详解一、算法简介Floyd算法（也称为Floyd-Warshall算法）是一种经典的多源最短路径算法，能够在带权图中计算任意两点之间的最短距离。 主要特点：  适用于有向图&#x2F;无向图、正权或负权边（但不能处理负权回路） 使用动态规划思想，直接在邻接矩阵上迭代更新 一次算法可得到所有节点对之间的最短距离  常见用途：  求任意两点间最短路 判断图的连通性（或可达性） 统计图中最短路径的直径和中心节点   二、算法复杂度Floyd算法的核心是三层嵌套循环：  外层遍历中间节点k 中间层遍历起点i 内层遍历终点j  因此时间复杂度：O(n³)，其中n为节点数。 空间复杂度：O(n²)，因为需要保存距离矩阵。 ⚠️ 当节点数较大时，Floyd算法不适合处理稠密大图；但对于n ≤ 400左右的题目，通常仍然可用。  三、Floyd算法核心思想设dist[i][j]表示当前已知的从节点i到节点j的最短距离。 初始状态：  若存在边i-&gt;j，则dist[i][j]=w(i,j) 若i==j，则dist[i][j]=0 否则dist[i][j]=INF  算法逐步考虑...</div></div></div></a><a class="pagination-related" href="/2026/03/21/Go-%E5%8F%98%E9%87%8F%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F/" title="Go 语言变量类型系统"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">Go 语言变量类型系统</div></div><div class="info-2"><div class="info-item-1">一、变量 &#x3D; 值 + 类型Go 语言的变量在底层由值和类型组成，但接口变量和非接口变量的结构完全不同。 1.1 非接口变量非接口变量（如 int、string、结构体）在编译时类型就完全确定，运行时只携带值： var x int = 42   // 编译时已知类型 int，运行时只是 42 这个值  </div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2026/04/13/Floyd%E7%AE%97%E6%B3%95%E8%AF%A6%E8%A7%A3/" title="Floyd算法详解"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-04-13</div><div class="info-item-2">Floyd算法详解</div></div><div class="info-2"><div class="info-item-1">Floyd算法详解一、算法简介Floyd算法（也称为Floyd-Warshall算法）是一种经典的多源最短路径算法，能够在带权图中计算任意两点之间的最短距离。 主要特点：  适用于有向图&#x2F;无向图、正权或负权边（但不能处理负权回路） 使用动态规划思想，直接在邻接矩阵上迭代更新 一次算法可得到所有节点对之间的最短距离  常见用途：  求任意两点间最短路 判断图的连通性（或可达性） 统计图中最短路径的直径和中心节点   二、算法复杂度Floyd算法的核心是三层嵌套循环：  外层遍历中间节点k 中间层遍历起点i 内层遍历终点j  因此时间复杂度：O(n³)，其中n为节点数。 空间复杂度：O(n²)，因为需要保存距离矩阵。 ⚠️ 当节点数较大时，Floyd算法不适合处理稠密大图；但对于n ≤ 400左右的题目，通常仍然可用。  三、Floyd算法核心思想设dist[i][j]表示当前已知的从节点i到节点j的最短距离。 初始状态：  若存在边i-&gt;j，则dist[i][j]=w(i,j) 若i==j，则dist[i][j]=0 否则dist[i][j]=INF  算法逐步考虑...</div></div></div></a><a class="pagination-related" href="/2026/03/17/%E4%BA%8C%E5%88%86%E7%AD%94%E6%A1%88%E7%AE%97%E6%B3%95/" title="二分答案（Binary Search on Answer）详解"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-03-17</div><div class="info-item-2">二分答案（Binary Search on Answer）详解</div></div><div class="info-2"><div class="info-item-1">二分答案是二分搜索的进阶应用，常用于解决 最值问题（最大&#x2F;最小）。   与普通二分搜索不同，它不是在数组中找元素，而是在答案空间中寻找最优解。    一、什么是二分答案？二分答案的核心思想是：  对答案进行二分，而不是对数据进行二分   📌 典型特征当题目满足以下条件时，可以考虑使用二分答案：  求 最小值最大化 &#x2F; 最大值最小化 问 是否可以做到某件事 存在“至少 &#x2F; 至多 &#x2F; 不超过”等限制 答案具有单调性   🧠 举个例子 给一个数组，把它分成 k 段，使得每段的和的最大值最小  👉 你要找的不是位置，而是一个“答案值”  二、核心模板123456789101112131415161718192021bool check(int mid) &#123;    // 判断当答案为 mid 时，是否满足条件&#125;int solve() &#123;    int left = 最小可能答案;    int right = 最大可能答案;    while (left &lt; right) &#123;        int ...</div></div></div></a><a class="pagination-related" href="/2026/03/11/%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3%E7%AE%97%E6%B3%95/" title="滑动窗口算法"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-03-11</div><div class="info-item-2">滑动窗口算法</div></div><div class="info-2"><div class="info-item-1">滑动窗口可以归为 快慢双指针算法。使用一快一慢两个指针前后相随，中间的部分就是一个“窗口”。 滑动窗口算法技巧主要用来解决 子数组或子串问题，例如：  寻找符合某个条件的 最长子数组 寻找符合某个条件的 最短子数组 统计满足条件的子串数量   一、滑动窗口的基本思想滑动窗口算法的核心思想是：  维护一个窗口，不断向右滑动，并在过程中更新答案。  基本逻辑如下： 1234567891011121314// 索引区间 [left, right) 是窗口int left = 0, right = 0;while (right &lt; nums.size()) &#123;    // 增大窗口    window.addLast(nums[right]);    right++;    while (needShrink) &#123;        // 缩小窗口        window.removeFirst(nums[left]);        left++;    &#125;&#125; 二、 注意事项滑动窗口并不能穷举所有子串如果题目要求穷举所有子串，一般需要使用两...</div></div></div></a><a class="pagination-related no-desc" href="/2026/03/16/%E5%8F%8C%E6%8C%87%E9%92%88%E6%8A%80%E5%B7%A7/" title="双指针技巧"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-03-16</div><div class="info-item-2">双指针技巧</div></div></div></a><a class="pagination-related" href="/2026/03/16/%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95-%E4%BB%8E%E5%88%9D%E7%BA%A7%E5%88%B0%E9%AB%98%E7%BA%A7/" title="排序算法-从入门到进阶"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-03-16</div><div class="info-item-2">排序算法-从入门到进阶</div></div><div class="info-2"><div class="info-item-1">排序算法是算法学习中的基础内容，也是面试和刷题中非常高频的知识点。这篇文章按照 从简单到进阶 的顺序，整理常见排序算法，包括：  冒泡排序 选择排序 插入排序 希尔排序 归并排序 快速排序 堆排序 计数排序 桶排序 基数排序   一、排序算法总览   排序算法 平均时间复杂度 最坏时间复杂度 空间复杂度 稳定性    冒泡排序 O(n^2) O(n^2) O(1) 稳定   选择排序 O(n^2) O(n^2) O(1) 不稳定   插入排序 O(n^2) O(n^2) O(1) 稳定   希尔排序 约 O(n^1.3 ~ n^2) O(n^2) O(1) 不稳定   归并排序 O(nlogn) O(nlogn) O(n) 稳定   快速排序 O(nlogn) O(n^2) O(logn) 不稳定   堆排序 O(nlogn) O(nlogn) O(1) 不稳定   计数排序 O(n + k) O(n + k) O(k) 稳定   桶排序 视分布而定 最坏 O(n^2) O(n + k) 取决于桶内排序   基数排序 O(d(n + k)) O(d(n + k)) O(n + k...</div></div></div></a><a class="pagination-related" href="/2026/03/12/%E4%BA%8C%E5%88%86%E6%90%9C%E7%B4%A2%E7%AE%97%E6%B3%95/" title="二分搜索模板"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-03-12</div><div class="info-item-2">二分搜索模板</div></div><div class="info-2"><div class="info-item-1">二分搜索通常用于解决 单调函数问题。二分思想的核心在于快速收缩搜索区间如果函数 f(x) 随着 x 单调变化，就可以使用二分搜索寻找满足条件的 x。    一、二分搜索通用模板12345678910111213141516171819202122232425262728293031323334// 函数 f 是关于自变量 x 的单调函数int f(int x) &#123;    // ...&#125;// 主函数，在 f(x) == target 的约束下求 x 的最值int solution(vector&lt;int&gt;&amp; nums, int target) &#123;    if (nums.size() == 0) return -1;    // 问自己：自变量 x 的最小值是多少？    int left = ...;    // 问自己：自变量 x 的最大值是多少？    int right = ... + 1;    while (left &lt; right) &#123;        int mid = left + (right - l...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/sakura.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Sakura</div><div class="author-info-description">记录技术与二次元相关的内容</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">10</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">18</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/Sakura1314lyc"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/Sakura1314lyc" target="_blank" title="Github"><i class="fab fa-github"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Dijkstra%E7%AE%97%E6%B3%95%E8%AF%A6%E8%A7%A3%E5%8F%8A%E4%B8%A4%E7%A7%8D%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0"><span class="toc-number">1.</span> <span class="toc-text">Dijkstra算法详解及两种代码实现</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E7%AE%97%E6%B3%95%E7%AE%80%E4%BB%8B"><span class="toc-number">1.1.</span> <span class="toc-text">一、算法简介</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E7%AE%97%E6%B3%95%E6%A0%B8%E5%BF%83%E6%80%9D%E6%83%B3"><span class="toc-number">1.2.</span> <span class="toc-text">二、算法核心思想</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B01%EF%BC%9A%E6%99%AE%E9%80%9A%E7%89%88%EF%BC%88O-n%C2%B2-%EF%BC%89"><span class="toc-number">1.3.</span> <span class="toc-text">三、代码实现1：普通版（O(n²)）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B02%EF%BC%9A%E5%A0%86%E4%BC%98%E5%8C%96%E7%89%88%EF%BC%88O-mlogn-%EF%BC%89"><span class="toc-number">1.4.</span> <span class="toc-text">四、代码实现2：堆优化版（O(mlogn)）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%94%E3%80%81%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98"><span class="toc-number">1.5.</span> <span class="toc-text">五、常见问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AD%E3%80%81%E6%80%BB%E7%BB%93"><span class="toc-number">1.6.</span> <span class="toc-text">六、总结</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BB%83%E4%B9%A0%E9%A2%98%E7%9B%AE%E6%8E%A8%E8%8D%90"><span class="toc-number">1.7.</span> <span class="toc-text">练习题目推荐</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/13/Floyd%E7%AE%97%E6%B3%95%E8%AF%A6%E8%A7%A3/" title="Floyd算法详解">Floyd算法详解</a><time datetime="2026-04-13T08:24:00.000Z" title="发表于 2026-04-13 16:24:00">2026-04-13</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/06/Dijkstra%E7%AE%97%E6%B3%95%E8%AF%A6%E8%A7%A3/" title="Dijkstra算法详解">Dijkstra算法详解</a><time datetime="2026-04-06T14:46:23.000Z" title="发表于 2026-04-06 22:46:23">2026-04-06</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/03/21/Go-%E5%8F%98%E9%87%8F%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F/" title="Go 语言变量类型系统">Go 语言变量类型系统</a><time datetime="2026-03-21T02:30:00.000Z" title="发表于 2026-03-21 10:30:00">2026-03-21</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/03/20/Go-slice-%E6%88%AA%E5%8F%96-vs-copy-%E7%9A%84%E5%8C%BA%E5%88%AB%E8%AF%A6%E8%A7%A3/" title="Go slice 截取 vs copy 的区别详解">Go slice 截取 vs copy 的区别详解</a><time datetime="2026-03-20T06:30:00.000Z" title="发表于 2026-03-20 14:30:00">2026-03-20</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/03/18/%E4%BB%8A%E6%97%A5%E7%95%AA%E5%89%A7%E6%8E%A8%E8%8D%90-%E6%AD%A3%E7%9B%B8%E5%8F%8D%E7%9A%84%E4%BD%A0%E5%92%8C%E6%88%91/" title="今日番剧推荐:正相反的你和我"><img src="/img/xianfandeni.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="今日番剧推荐:正相反的你和我"/></a><div class="content"><a class="title" href="/2026/03/18/%E4%BB%8A%E6%97%A5%E7%95%AA%E5%89%A7%E6%8E%A8%E8%8D%90-%E6%AD%A3%E7%9B%B8%E5%8F%8D%E7%9A%84%E4%BD%A0%E5%92%8C%E6%88%91/" title="今日番剧推荐:正相反的你和我">今日番剧推荐:正相反的你和我</a><time datetime="2026-03-18T06:28:56.000Z" title="发表于 2026-03-18 14:28:56">2026-03-18</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By Sakura</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.1.1</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.5.4</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.5.4"></script><script src="/js/main.js?v=5.5.4"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div><script src="/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":null,"pluginJsPath":null,"log":false,"pluginModelPath":"assets/","tagMode":false});</script></body></html>
