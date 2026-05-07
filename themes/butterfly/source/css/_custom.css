@@ -1,0 +1,59 @@
+body {
+  background-color: #f5f5f5;
+  color: #2e2d41;
+  min-height: 100vh;
+  position: relative;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image: url('/img/Asuna.jpg');
+  background-position: center center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  opacity: 0.36;
+  filter: blur(1.2px);
+}
+
+/* 关键风格小优化：让背景图略有浮层效果 */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(135deg, rgba(255, 255, 255, .25), rgba(255, 255, 255, .1));
+  pointer-events: none;
+}
+
+.card-widget,
+.recent-post-item,
+.widget,
+.post-header,
+.tag-cloud,
+article,
+section {
+  border: 1px solid rgba(125, 224, 162, 0.6);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(12px);
+}
+
+/* 为主要卡片增加第一张风格的边框 + 玻璃感 */
+.recent-post-item,
+.card-widget,
+.widget,
+.post-header,
+.tag-cloud,
+article,
+section {
+  background: rgba(255, 255, 255, 0.78) !important;
+  border: 1px solid #80ed99;
+  box-shadow: 0 8px 24px rgba(22, 24, 59, 0.08);
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+}
+
+/* 如果要继续加入新的“后面几张”图片，请把对应文件放到 public/img/ 并在 body::before 的 background-image 列表里补上 */
