@@ -1,0 +1,175 @@
+/* ============================================
+   Custom Global Styles for Butterfly Theme
+   不动主题底层，通过 inject.head 注入覆盖
+   ============================================ */
+
+/* ── CSS Variables ─────────────────────────── */
+:root {
+  --custom-accent: #49b1f5;
+  --custom-accent-hover: #3a8fd4;
+  --card-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  --card-shadow-hover: 0 6px 24px rgba(0, 0, 0, 0.15);
+  --transition-normal: 0.3s ease;
+  --border-radius-card: 12px;
+}
+
+[data-theme="dark"] {
+  --card-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+  --card-shadow-hover: 0 6px 28px rgba(0, 0, 0, 0.5);
+}
+
+/* ── Card Enhancements ─────────────────────── */
+.recent-post-item,
+.card-widget,
+#aside-content .card-widget {
+  border-radius: var(--border-radius-card);
+  box-shadow: var(--card-shadow);
+  transition: transform var(--transition-normal),
+              box-shadow var(--transition-normal);
+}
+
+.recent-post-item:hover,
+.card-widget:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--card-shadow-hover);
+}
+
+.layout > #recent-posts {
+  max-width: 1300px;
+}
+
+/* ── Post Cards in Index ──────────────────── */
+#recent-posts > .recent-post-item {
+  overflow: hidden;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="dark"] #recent-posts > .recent-post-item {
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+/* ── Scrollbar Styling ─────────────────────── */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(73, 177, 245, 0.4);
+  border-radius: 8px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(73, 177, 245, 0.7);
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(73, 177, 245, 0.4) transparent;
+}
+
+/* ── Selection Color ──────────────────────── */
+::selection {
+  background: rgba(73, 177, 245, 0.25);
+  color: inherit;
+}
+
+[data-theme="dark"] ::selection {
+  background: rgba(73, 177, 245, 0.35);
+}
+
+/* ── Link Underline Animation ─────────────── */
+#article-container a:not(.headerlink):not(.fancybox):not(.social-icon):not(.tag-cloud-item),
+#post-info a {
+  text-decoration: none;
+  background-image: linear-gradient(var(--custom-accent), var(--custom-accent));
+  background-size: 0 2px;
+  background-repeat: no-repeat;
+  background-position: left bottom;
+  transition: background-size 0.35s ease, color 0.3s ease;
+}
+
+#article-container a:hover:not(.headerlink):not(.fancybox):not(.social-icon):not(.tag-cloud-item) {
+  background-size: 100% 2px;
+}
+
+/* ── Typography ───────────────────────────── */
+body {
+  letter-spacing: 0.3px;
+}
+
+.post-title {
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+#article-container h1,
+#article-container h2,
+#article-container h3 {
+  position: relative;
+  padding-left: 14px;
+}
+
+#article-container h2::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 4px;
+  height: 1.2em;
+  background: var(--custom-accent);
+  border-radius: 2px;
+}
+
+/* ── Code Block Enhancements ──────────────── */
+figure.highlight {
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+/* ── Button / Tag Hover ───────────────────── */
+.tag-cloud-item:hover,
+a.tag-cloud-list-item:hover {
+  transform: scale(1.08);
+  transition: transform 0.25s ease;
+}
+
+/* ── Loading / Transition Smoothing ───────── */
+#content-inner {
+  animation: fadeInUp 0.5s ease;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ── Footer Enhancements ──────────────────── */
+#footer {
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+/* ── Nav Bar Glow ─────────────────────────── */
+#nav {
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.06);
+}
+
+[data-theme="dark"] #nav {
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.3);
+}

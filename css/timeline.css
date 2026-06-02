@@ -1,0 +1,185 @@
+/* ============================================
+   Time River Timeline Page Styles
+   时光河流归档页
+   ============================================ */
+
+/* ── Override Butterfly Container for Full-Width ── */
+body:has(#timeline-container) #content-inner.layout {
+  padding: 0;
+  max-width: 100%;
+}
+
+body:has(#timeline-container) #article-container.container {
+  max-width: 100%;
+  padding: 0;
+  margin: 0;
+}
+
+body:has(#timeline-container) #body-wrap {
+  overflow-x: hidden;
+}
+
+/* ── Timeline Container ───────────────────── */
+#timeline-container {
+  width: 100%;
+  height: calc(100vh - 60px);
+  position: relative;
+  overflow-x: auto;
+  overflow-y: hidden;
+  cursor: grab;
+  background: #fafbfc;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+[data-theme="dark"] #timeline-container {
+  background: #0d1117;
+}
+
+#timeline-container:active {
+  cursor: grabbing;
+}
+
+#timeline-container.dragging {
+  cursor: grabbing;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* ── SVG Canvas ───────────────────────────── */
+#timeline-svg {
+  display: block;
+  min-height: 100%;
+}
+
+/* ── SVG Node Styles ──────────────────────── */
+.timeline-node {
+  cursor: pointer;
+  transition: r 0.3s ease, opacity 0.3s ease;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
+}
+
+.timeline-node:hover {
+  opacity: 1 !important;
+}
+
+/* ── Tooltip ──────────────────────────────── */
+.timeline-tooltip {
+  position: absolute;
+  pointer-events: none;
+  background: rgba(30, 30, 30, 0.92);
+  color: #fff;
+  padding: 10px 16px;
+  border-radius: 10px;
+  font-size: 13px;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translate(-50%, calc(-100% - 14px));
+  transition: opacity 0.2s ease;
+  z-index: 1000;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+[data-theme="dark"] .timeline-tooltip {
+  background: rgba(50, 50, 50, 0.92);
+}
+
+.timeline-tooltip.visible {
+  opacity: 1;
+}
+
+.timeline-tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-top-color: rgba(30, 30, 30, 0.92);
+}
+
+[data-theme="dark"] .timeline-tooltip::after {
+  border-top-color: rgba(50, 50, 50, 0.92);
+}
+
+/* ── Year Labels ──────────────────────────── */
+.timeline-year-label {
+  font-weight: 700;
+  font-size: 15px;
+  fill: #49b1f5;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="dark"] .timeline-year-label {
+  fill: #6db8f2;
+}
+
+/* ── Path Styling ─────────────────────────── */
+#timeline-path {
+  fill: none;
+  stroke: #49b1f5;
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.5;
+}
+
+[data-theme="dark"] #timeline-path {
+  stroke: #6db8f2;
+  opacity: 0.4;
+}
+
+/* ── Navigation Hint ──────────────────────── */
+.timeline-nav-hint {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.65);
+  color: #fff;
+  padding: 8px 18px;
+  border-radius: 20px;
+  font-size: 12px;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  pointer-events: none;
+  z-index: 999;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.timeline-nav-hint.show {
+  opacity: 1;
+}
+
+/* ── Timeline Page Header ─────────────────── */
+body:has(#timeline-container) #page-header {
+  display: none;
+}
+
+body:has(#timeline-container) #footer {
+  display: none;
+}
+
+/* ── Responsive ───────────────────────────── */
+@media screen and (max-width: 768px) {
+  #timeline-container {
+    height: calc(100vh - 50px);
+  }
+
+  .timeline-tooltip {
+    font-size: 11px;
+    padding: 6px 12px;
+  }
+
+  .timeline-year-label {
+    font-size: 13px;
+  }
+
+  .timeline-nav-hint {
+    font-size: 11px;
+    padding: 6px 14px;
+    bottom: 14px;
+  }
+}
